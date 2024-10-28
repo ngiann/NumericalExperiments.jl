@@ -1,5 +1,9 @@
 module NumericalExperiments
 
-# Write your package code here.
+    using GPCC, LinearAlgebra
+
+    include("gpccloglikelihood.jl")
+
+    export gpccloglikelihood
 
 end
