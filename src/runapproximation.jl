@@ -53,7 +53,7 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
 
         for _ in 2:10
 
-            elboapprox, res = updatecovariance(elbomviext, res)
+            elboapprox, res = updatecovariance(elboapprox, res)
 
             res = maximise_elbo(elboapprox, getsolution(res), iterations = iterations)
 
