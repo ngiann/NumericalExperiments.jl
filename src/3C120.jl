@@ -12,7 +12,7 @@ function run_3C120(; iterations = 1000, cmaesiterations = 500, repeats = 10)
 
     logp, = setup_3C120_joint_loglikel()
 
-    nsamples_range = [50; 100]#; 200; 300; 400; 500]
+    nsamples_range = [50; 100; 200; 300; 400; 500]
 
 
     results_diag = map(nsamples_range) do nsamples
