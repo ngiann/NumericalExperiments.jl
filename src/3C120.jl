@@ -9,6 +9,7 @@ end
 
 function run_3C120(; iterations = 1000, cmaesiterations = 500, repeats = 10)
 
+    rng = MersenneTwister(101)
 
     logp, = setup_3C120_joint_loglikel()
 
@@ -41,7 +42,9 @@ function run_3C120(; iterations = 1000, cmaesiterations = 500, repeats = 10)
 
     results_mvi = map(nsamples_range) do nsamples
 
-        elbomvi = elbofy_mvi(logp, 1.0*Matrix(I,6,6), nsamples)
+        V = geteigenvectors(logp, getmode(logp, randn(rng, 6))[1])
+
+        elbomvi = elbofy_mvi(logp, V, nsamples)
 
         display(elbomvi)
 
