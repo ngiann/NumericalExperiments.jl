@@ -14,44 +14,46 @@ end
 
 
 
-function run_approximation(elboapprox; iterations = 10_000, repeats = 10, seed = 1)
+function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 500, repeats = 10, seed = 1)
 
     
     rng, samplerng = setup_random_number_generators(seed)
 
 
-    function fit_strategy(::ElboDiag)
+    function fit_strategy(::ELBOfy.ElboDiag)
 
-        local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = 500, rng = samplerng())
+        local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = cmaesiterations, rng = samplerng())
 
         maximise_elbo(elboapprox, getsolution(p), iterations = iterations)
 
     end
 
-    function fit_strategy(::ElboMvi)
+    function fit_strategy(::ELBOfy.ElboMVI)
 
-        local p = bbmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = 500, rng = samplerng())
+        local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = cmaesiterations, rng = samplerng())
 
-        maximise_elbo(elboapprox,  getsolution(p), iterations = iterations)
+        maximise_elbo(elboapprox, getsolution(p), iterations = iterations)
 
     end
 
-    function fit_strategy(::ElboFull)
+    function fit_strategy(::ELBOfy.ElboFull)
 
-        local p = bbmaximise_elbo(elboapprox, [randn(rng, 6); vec(1.0*Matrix(I,6,6))], iterations = 500, rng = samplerng())
+        local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); vec(1.0*Matrix(I,6,6))], iterations = cmaesiterations, rng = samplerng())
         
-        maximise_elbo(elboapprox, p, iterations = iterations)
+        maximise_elbo(elboapprox, getsolution(p), iterations = iterations)
 
     end
 
 
-    function fit_strategy(::ElboMviExt)
+    function fit_strategy(::ELBOfy.ElboMVIExt)
 
-        local p = bbmaximise_elbo(elboapprox, [randn(rng, 6); ones(6); 0], iterations = 500, rng = samplerng())
+        local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6); 0], iterations = cmaesiterations, rng = samplerng())
 
         local res = maximise_elbo(elboapprox, getsolution(p), iterations = iterations)
 
         for _ in 2:10
+
+            elboapprox, res = updatecovariance(elbomviext, res)
 
             res = maximise_elbo(elboapprox, getsolution(res), iterations = iterations)
 
