@@ -4,8 +4,11 @@ authors = ["Nikos Gianniotis <ngiann@gmail.com> and contributors"]
 version = "1.0.0-DEV"
 
 [deps]
+ELBOfy = "6fc07f5b-fa7b-4f51-aead-263239aaf445"
+ELBOfyUtilities = "21605d96-f59a-48f1-9b8f-10329cb5ba4e"
 GPCC = "4498ab02-56af-48f6-b5af-4c1c07c71523"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
 julia = "1.6.7"

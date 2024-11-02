@@ -1,6 +1,6 @@
 module NumericalExperiments
 
-    using GPCC, LinearAlgebra
+    using GPCC, LinearAlgebra, Random, ELBOfy, ELBOfyUtilities
 
     include("gpccloglikelihood.jl")
 
