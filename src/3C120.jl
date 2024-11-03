@@ -7,7 +7,7 @@ function setup_3C120_joint_loglikel()
 end
 
 
-function run_3C120_diag(; iterations = 1000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
+function run_3C120_diag(; iterations = 10_000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
     
     logp, = setup_3C120_joint_loglikel()
 
@@ -26,7 +26,7 @@ function run_3C120_diag(; iterations = 1000, cmaesiterations = 500, repeats = 10
 end
 
 
-function run_3C120_full(; iterations = 1000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
+function run_3C120_full(; iterations = 10_000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
     
     logp, = setup_3C120_joint_loglikel()
     
@@ -45,7 +45,7 @@ function run_3C120_full(; iterations = 1000, cmaesiterations = 500, repeats = 10
 end
 
 
-function run_3C120_mvi(; iterations = 1000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
+function run_3C120_mvi(; iterations = 10_000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
     
     logp, = setup_3C120_joint_loglikel()
 
@@ -66,7 +66,7 @@ function run_3C120_mvi(; iterations = 1000, cmaesiterations = 500, repeats = 10,
 end
 
 
-function run_3C120_mvi_ext(; iterations = 1000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
+function run_3C120_mvi_ext(; iterations = 10_000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
     
     logp, = setup_3C120_joint_loglikel()
 
