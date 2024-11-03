@@ -10,6 +10,4 @@ module NumericalExperiments
 
     include("3C120.jl")
 
-    export run_3C120
-
 end
