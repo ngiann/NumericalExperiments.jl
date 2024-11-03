@@ -7,16 +7,11 @@ function setup_3C120_joint_loglikel()
 end
 
 
-function run_3C120(; iterations = 1000, cmaesiterations = 500, repeats = 10)
-
-    rng = MersenneTwister(101)
-
+function run_3C120_diag(; iterations = 1000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
+    
     logp, = setup_3C120_joint_loglikel()
 
-    nsamples_range = [50; 100; 200; 300; 400; 500]
-
-
-    results_diag = map(nsamples_range) do nsamples
+    map(nsamples_range) do nsamples
 
         elbodiag = elbofy_diag(logp, 6, nsamples)
 
@@ -28,7 +23,14 @@ function run_3C120(; iterations = 1000, cmaesiterations = 500, repeats = 10)
         
     end
 
-    results_full = map(nsamples_range) do nsamples
+end
+
+
+function run_3C120_full(; iterations = 1000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
+    
+    logp, = setup_3C120_joint_loglikel()
+    
+    map(nsamples_range) do nsamples
 
         elbofull = elbofy_full(logp, 6, nsamples)
 
@@ -40,7 +42,14 @@ function run_3C120(; iterations = 1000, cmaesiterations = 500, repeats = 10)
 
     end
 
-    results_mvi = map(nsamples_range) do nsamples
+end
+
+
+function run_3C120_mvi(; iterations = 1000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
+    
+    logp, = setup_3C120_joint_loglikel()
+
+    map(nsamples_range) do nsamples
 
         V = geteigenvectors(logp, getmode(logp, randn(rng, 6))[1])
 
@@ -54,7 +63,14 @@ function run_3C120(; iterations = 1000, cmaesiterations = 500, repeats = 10)
 
     end
 
-    results_mviext = map(nsamples_range) do nsamples
+end
+
+
+function run_3C120_mvi_ext(; iterations = 1000, cmaesiterations = 500, repeats = 10, nsamples_range = [50; 100; 200; 300; 400; 500])
+    
+    logp, = setup_3C120_joint_loglikel()
+
+    map(nsamples_range) do nsamples
 
         elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), nsamples)
 
@@ -65,9 +81,5 @@ function run_3C120(; iterations = 1000, cmaesiterations = 500, repeats = 10)
         varparams, elbomviext(varparams), testelbo(elbomviext, varparams, Stest = 10_000)
 
     end
-
-    
-
-    return results_diag, results_full, results_mvi, results_mviext
 
 end
