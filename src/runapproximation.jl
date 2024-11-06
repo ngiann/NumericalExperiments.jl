@@ -51,12 +51,21 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
 
         local res = maximise_elbo(elboapprox, getsolution(p), iterations = iterations)
 
+        prvfitness = res.minimum
+        tol = 1e-4
+
         for _ in 2:10
 
             elboapprox, res = updatecovariance(elboapprox, res)
 
             res = maximise_elbo(elboapprox, getsolution(res), iterations = iterations)
 
+            if abs(res.minimum - prvfitness)<tol
+                break
+            end
+
+            prvfitness = res.minimum
+            
         end
 
         return res
