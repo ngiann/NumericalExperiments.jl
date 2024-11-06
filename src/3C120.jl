@@ -49,6 +49,8 @@ function run_3C120_mvi(; iterations = 10_000, cmaesiterations = 500, repeats = 1
     
     logp, = setup_3C120_joint_loglikel()
 
+    rng = MersenneTwister(1)
+
     map(nsamples_range) do nsamples
 
         V = geteigenvectors(logp, getmode(logp, randn(rng, 6))[1])
