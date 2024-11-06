@@ -1,10 +1,10 @@
 module NumericalExperiments
 
-    using GPCC, GPCCData, LinearAlgebra, Random, ELBOfy, ELBOfyUtilities
+    using GPCC, GPCCData, LinearAlgebra, Random, ELBOfy, ELBOfyUtilities, Distributions
 
     include("gpccloglikelihood.jl")
-
-    export gpccloglikelihood
+    include("roundeduniform.jl")
+    export gpccloglikelihood, roundeduniform
 
     include("runapproximation.jl")
 

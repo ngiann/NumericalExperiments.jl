@@ -20,6 +20,8 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
     Sobs = Diagonal(reduce(vcat, stdarray).^2) # observed noise matrix
 
 
+    logpriordelay = roundeduniform(0, maxdelay, 0.5)
+
     # Prior for shift vector b
 
     # μb = map(mean, yarray)
@@ -43,7 +45,7 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
 
         local b = params[MARK+1:MARK+L]; MARK += L
 
-        local τ = [0; maxdelay*sigmoid.(params[MARK+1:MARK+L-1])]; MARK += L-1
+        local τ = [0; params[MARK+1:MARK+L-1]]; MARK += L-1
 
         local ρ = exp(params[MARK+1]) + 1e-2; MARK += 1
 
@@ -81,8 +83,9 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
 
         C = cholesky(Symmetric(A*K₁*A + Sobs)).L
 
-        -0.5*sum(abs2.(C\(Y-Q*b))) - 0.5*2*sum(log.(diag(C))) - 0.5*log(2π)*size(C,1)
+        logl = -0.5*sum(abs2.(C\(Y-Q*b))) - 0.5*2*sum(log.(diag(C))) - 0.5*log(2π)*size(C,1)
 
+        logl + logpriordelay(τ[2])
     end
       
 

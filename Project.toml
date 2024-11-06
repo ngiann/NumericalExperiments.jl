@@ -4,6 +4,7 @@ authors = ["Nikos Gianniotis <ngiann@gmail.com> and contributors"]
 version = "1.0.2-DEV"
 
 [deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 ELBOfy = "6fc07f5b-fa7b-4f51-aead-263239aaf445"
 ELBOfyUtilities = "21605d96-f59a-48f1-9b8f-10329cb5ba4e"
 GPCC = "4498ab02-56af-48f6-b5af-4c1c07c71523"
