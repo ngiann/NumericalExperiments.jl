@@ -45,7 +45,7 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
 
         local τ = [0; maxdelay*sigmoid.(params[MARK+1:MARK+L-1])]; MARK += L-1
 
-        local ρ = exp(params[MARK+1]); MARK += 1
+        local ρ = exp(params[MARK+1]) + 1e-3; MARK += 1
 
         @assert(MARK == length(params))
 
