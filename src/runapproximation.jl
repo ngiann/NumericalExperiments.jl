@@ -22,7 +22,9 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
 
     function fit_strategy(::ELBOfy.ElboDiag)
 
-        local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = cmaesiterations, rng = samplerng())
+        #local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = cmaesiterations, rng = samplerng())
+
+        local p = [randn(rng, 6); ones(6)]
 
         maximise_elbo(elboapprox, getsolution(p), iterations = iterations)
 
@@ -30,7 +32,9 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
 
     function fit_strategy(::ELBOfy.ElboMVI)
 
-        local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = cmaesiterations, rng = samplerng())
+        #local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = cmaesiterations, rng = samplerng())
+        
+        local p = [randn(rng, 6); ones(6)]
 
         maximise_elbo(elboapprox, getsolution(p), iterations = iterations)
 
@@ -38,8 +42,10 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
 
     function fit_strategy(::ELBOfy.ElboFull)
 
-        local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); vec(1.0*Matrix(I,6,6))], iterations = cmaesiterations, rng = samplerng())
+        #local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); vec(1.0*Matrix(I,6,6))], iterations = cmaesiterations, rng = samplerng())
         
+        local p = [randn(rng, 6); vec(1.0*Matrix(I,6,6))]
+
         maximise_elbo(elboapprox, getsolution(p), iterations = iterations)
 
     end
@@ -47,8 +53,10 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
 
     function fit_strategy(::ELBOfy.ElboMVIExt)
 
-        local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6); 0], iterations = cmaesiterations, rng = samplerng())
+        # local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6); 0], iterations = cmaesiterations, rng = samplerng())
 
+        local p = [randn(rng, 6); ones(6); 0]
+        
         local res = maximise_elbo(elboapprox, getsolution(p), iterations = iterations)
 
         prvfitness = res.minimum
