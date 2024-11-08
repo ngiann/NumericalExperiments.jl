@@ -1,12 +1,17 @@
 module NumericalExperiments
 
-    using GPCC, GPCCData, LinearAlgebra, Random, ELBOfy, ELBOfyUtilities, Distributions
+    using GPCC, GPCCData, LinearAlgebra, Random, ELBOfy, ELBOfyUtilities, Distributions, ProgressMeter, ThreadTools
+
+    # Following lines makes ProgressMeter work with tmap1
+
+    ProgressMeter.ncalls(::typeof(tmap1), ::Function, args...) = ProgressMeter.ncalls_map(args...)
 
     include("gpccloglikelihood.jl")
+    
     include("roundeduniform.jl")
     export gpccloglikelihood, roundeduniform
 
-    include("runapproximation.jl")
+    # include("runapproximation.jl")
 
     include("3C120.jl")
 

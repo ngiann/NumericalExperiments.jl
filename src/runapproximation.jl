@@ -20,7 +20,7 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
     rng, samplerng = setup_random_number_generators(seed)
 
 
-    function fit_strategy(::ELBOfy.ElboDiag)
+    function fit_approximation(::ELBOfy.ElboDiag)
 
         #local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = cmaesiterations, rng = samplerng())
 
@@ -30,7 +30,7 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
 
     end
 
-    function fit_strategy(::ELBOfy.ElboMVI)
+    function fit_approximation(::ELBOfy.ElboMVI)
 
         #local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6)], iterations = cmaesiterations, rng = samplerng())
         
@@ -40,7 +40,7 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
 
     end
 
-    function fit_strategy(::ELBOfy.ElboFull)
+    function fit_approximation(::ELBOfy.ElboFull)
 
         #local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); vec(1.0*Matrix(I,6,6))], iterations = cmaesiterations, rng = samplerng())
         
@@ -51,7 +51,7 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
     end
 
 
-    function fit_strategy(::ELBOfy.ElboMVIExt)
+    function fit_approximation(::ELBOfy.ElboMVIExt)
 
         # local p = cmaesmaximise_elbo(elboapprox, [randn(rng, 6); ones(6); 0], iterations = cmaesiterations, rng = samplerng())
 
@@ -80,8 +80,6 @@ function run_approximation(elboapprox; iterations = 10_000, cmaesiterations = 50
 
     end
 
-
-    results = [fit_strategy(elboapprox) for _ in 1:repeats]
 
     bestindex = argmin([ELBOfyUtilities.getminimum(r) for r in results])
 

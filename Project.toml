@@ -10,7 +10,9 @@ ELBOfyUtilities = "21605d96-f59a-48f1-9b8f-10329cb5ba4e"
 GPCC = "4498ab02-56af-48f6-b5af-4c1c07c71523"
 GPCCData = "6ae24528-df3b-47a6-8d0b-c8e9925c8a04"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+ThreadTools = "dbf13d8f-d36e-4350-8970-f3a99faba1a8"
 
 [compat]
 julia = "1.6.7"

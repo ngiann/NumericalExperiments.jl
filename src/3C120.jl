@@ -7,81 +7,99 @@ function setup_3C120_joint_loglikel()
 end
 
 
-function run_3C120_diag(; iterations = 30_000, cmaesiterations = 500, repeats = 10, nsamples_range = [150])
+function run_3C120_diag(; iterations = 30_000, repeats = 10, nsamples = 0, rng = MersenneTwister(1))
     
     logp, = setup_3C120_joint_loglikel()
 
-    map(nsamples_range) do nsamples
+    function fit_approximation()
 
-        elbodiag = elbofy_diag(logp, 6, nsamples)
+        local elbodiag = elbofy_diag(logp, 6, nsamples, parallel = false)
 
-        display(elbodiag)
+        local p = [randn(rng, 6); ones(6)]
 
-        varparams = run_approximation(elbodiag; iterations = iterations, cmaesiterations = cmaesiterations, repeats = repeats)
+        maximise_elbo(elbodiag, getsolution(p), iterations = iterations, show_trace = false)
 
-        varparams, elbodiag(varparams), testelbo(elbodiag, varparams, Stest = 10_000)
+    end
+
+    @showprogress tmap1( _ -> fit_approximation(), 1:repeats)
+
+end
+
+
+function run_3C120_full(; iterations = 30_000, repeats = 10, nsamples = 0, rng = MersenneTwister(1))
+    
+    logp, = setup_3C120_joint_loglikel()
+    
+    function fit_approximation()
+
+        local elbofull = elbofy_full(logp, 6, nsamples)
+
+        local p = [randn(rng, 6); vec(1.0*Matrix(I,6,6))]
+
+        maximise_elbo(elbofull, getsolution(p), iterations = iterations, show_trace = false)
+
+    end
+
+    @showprogress tmap1( _ -> fit_approximation(), 1:repeats)
+
+end
+
+
+function run_3C120_mvi(; iterations = 30_000, repeats = 10, nsamples = 0, rng = MersenneTwister(1))
+    
+    logp, = setup_3C120_joint_loglikel()
+
+    function fit_approximation()
+
+        local V = geteigenvectors(logp, getmode(logp, randn(rng, 6))[1])
+
+        local elbomvi = elbofy_mvi(logp, V, nsamples)
+
+        local p = [randn(rng, 6); ones(6)]
+
+        maximise_elbo(elbomvi, getsolution(p), iterations = iterations, show_trace = false)
+
+    end
+
+    @showprogress tmap1( _ -> fit_approximation(), 1:repeats)
+
+end
+
+
+function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rng = MersenneTwister(1))
+    
+    logp, = setup_3C120_joint_loglikel()
+
+    function fit_approximation()
+
+        local p = [randn(rng, 6); ones(6); 0]
+
+        local elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), nsamples)
+
+        local res = maximise_elbo(elbomviext, getsolution(p), iterations = iterations, show_trace = false)
+
+        local prvfitness = res.minimum
         
-    end
+        local tol = 1e-4
 
-end
+        for _ in 2:10
 
+            elbomviext, res = updatecovariance(elbomviext, res)
 
-function run_3C120_full(; iterations = 30_000, cmaesiterations = 500, repeats = 10, nsamples_range = [150])
-    
-    logp, = setup_3C120_joint_loglikel()
-    
-    map(nsamples_range) do nsamples
+            res = maximise_elbo(elbomviext, getsolution(res), iterations = iterations)
 
-        elbofull = elbofy_full(logp, 6, nsamples)
+            if abs(res.minimum - prvfitness)<tol
+                
+                break
 
-        display(elbofull)
+            end
 
-        varparams = run_approximation(elbofull; iterations = iterations, cmaesiterations = cmaesiterations, repeats = repeats)
-
-        varparams, elbofull(varparams), testelbo(elbofull, varparams, Stest = 10_000)
-
-    end
-
-end
-
-
-function run_3C120_mvi(; iterations = 30_000, cmaesiterations = 500, repeats = 10, nsamples_range = [150])
-    
-    logp, = setup_3C120_joint_loglikel()
-
-    rng = MersenneTwister(1)
-
-    map(nsamples_range) do nsamples
-
-        V = geteigenvectors(logp, getmode(logp, randn(rng, 6))[1])
-
-        elbomvi = elbofy_mvi(logp, V, nsamples)
-
-        display(elbomvi)
-
-        varparams = run_approximation(elbomvi; iterations = iterations, cmaesiterations = cmaesiterations, repeats = repeats)
-
-        varparams, elbomvi(varparams), testelbo(elbomvi, varparams, Stest = 10_000)
+            prvfitness = res.minimum
+            
+        end
 
     end
 
-end
-
-
-function run_3C120_mvi_ext(; iterations = 30_000, cmaesiterations = 500, repeats = 10, nsamples_range = [150])
+    @showprogress tmap1( _ -> fit_approximation(), 1:repeats)
     
-    logp, = setup_3C120_joint_loglikel()
-
-    map(nsamples_range) do nsamples
-
-        elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), nsamples)
-
-        display(elbomviext)
-
-        varparams = run_approximation(elbomviext; iterations = iterations, cmaesiterations = cmaesiterations, repeats = repeats)
-
-        varparams, elbomviext(varparams), testelbo(elbomviext, varparams, Stest = 10_000)
-
-    end
-
 end
