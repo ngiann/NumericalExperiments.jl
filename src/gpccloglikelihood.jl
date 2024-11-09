@@ -24,13 +24,25 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
 
     logpriordelay = roundeduniform(0, maxdelay, 0.5)
 
-    # prior on scalings α
+    #  weakly informative prior on scalings α
 
-    priorα = [fitinversegamma(μ = std(y), σ = 3) for y in yarray]
+    priorα = [fitinversegamma(μ = std(y), σ = 5) for y in yarray]
 
-    # prior for shift vector b
+    #  weakly informative prior for shift vector b
 
-    priorb = [Normal(mean(y), 10) for y in yarray]
+    priorb = [Normal(mean(y), 5) for y in yarray]
+
+    # weakly informative prior on lengthscale
+
+    priorρ =  let 
+        
+        local ρ₀ =  GPCC.infercommonlengthscale(tarray, yarray, stdarray, kernel = kernel, iterations = 10000, numberofrestarts=20, initialrandom=10, ρmin = 0.1, ρmax = 200.0, verbose = false)
+
+        fitinversegamma(μ = ρ₀, σ = 5)
+
+    end
+
+    @show priorρ
     
 
     #---------------------------------------------------------------------
@@ -89,7 +101,7 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
 
         logl = -0.5*sum(abs2.(C\(Y-Q*b))) - 0.5*2*sum(log.(diag(C))) - 0.5*log(2π)*size(C,1)
 
-        logprior =  logpriordelay(τ[2])
+        logprior =  logpriordelay(τ[2]) + logpdf(priorρ, ρ)
         
         for l in 1:L
 
