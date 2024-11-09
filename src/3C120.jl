@@ -17,11 +17,11 @@ function run_3C120_diag(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
 
         local p = [randn(rng, 6); 0.1*ones(6)]
 
-        maximise_elbo(elbodiag, getsolution(p), iterations = iterations, show_trace = false)
+        maximise_elbo(elbodiag, getsolution(p), iterations = iterations, show_trace = true)
 
     end
 
-    @showprogress tmap1( _ -> fit_approximation(), 1:repeats)
+    @showprogress map( _ -> fit_approximation(), 1:repeats)
 
 end
 
@@ -36,11 +36,11 @@ function run_3C120_full(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
 
         local p = [randn(rng, 6); vec(0.1*Matrix(I,6,6))]
 
-        maximise_elbo(elbofull, getsolution(p), iterations = iterations, show_trace = false)
+        maximise_elbo(elbofull, getsolution(p), iterations = iterations, show_trace = true)
 
     end
 
-    @showprogress tmap1( _ -> fit_approximation(), 1:repeats)
+    @showprogress map( _ -> fit_approximation(), 1:repeats)
 
 end
 
@@ -57,11 +57,11 @@ function run_3C120_mvi(; iterations = 30_000, repeats = 10, nsamples = 0, rng = 
 
         local p = [randn(rng, 6); 0.1*ones(6)]
 
-        maximise_elbo(elbomvi, getsolution(p), iterations = iterations, show_trace = false)
+        maximise_elbo(elbomvi, getsolution(p), iterations = iterations, show_trace = true)
 
     end
 
-    @showprogress tmap1( _ -> fit_approximation(), 1:repeats)
+    @showprogress map( _ -> fit_approximation(), 1:repeats)
 
 end
 
@@ -76,7 +76,7 @@ function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rn
 
         local elbomviext = elbofy_mvi_ext(logp, 0.1*Matrix(I,6,6), nsamples)
 
-        local res = maximise_elbo(elbomviext, getsolution(p), iterations = iterations, show_trace = false)
+        local res = maximise_elbo(elbomviext, getsolution(p), iterations = iterations, show_trace = true)
 
         local prvfitness = res.minimum
         
@@ -100,6 +100,6 @@ function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rn
 
     end
 
-    @showprogress tmap1( _ -> fit_approximation(), 1:repeats)
+    @showprogress map( _ -> fit_approximation(), 1:repeats)
     
 end
