@@ -13,7 +13,7 @@ function run_3C120_diag(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
 
     function fit_approximation()
 
-        local elbodiag = elbofy_diag(logp, 6, nsamples, parallel = false)
+        local elbodiag = elbofy_diag(logp, 6, nsamples, parallel = true)
 
         local p = [randn(rng, 6); 0.1*ones(6)]
 
