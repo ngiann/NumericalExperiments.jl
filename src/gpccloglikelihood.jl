@@ -20,14 +20,18 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
     Sobs = Diagonal(reduce(vcat, stdarray).^2) # observed noise matrix
 
 
+    # prior on delay
+
     logpriordelay = roundeduniform(0, maxdelay, 0.5)
 
-    # Prior for shift vector b
+    # prior on scalings α
 
-    # μb = map(mean, yarray)
+    priorα = [fitinversegamma(μ = std(y), σ = 3) for y in yarray]
 
-    # Σb = 100 * Diagonal(map(var, yarray)) # inflated prior covariance
+    # prior for shift vector b
 
+    priorb = [Normal(mean(y), 10) for y in yarray]
+    
 
     #---------------------------------------------------------------------
     # Define objective as marginal log-likelihood and auxiliaries
@@ -41,7 +45,7 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
 
         local MARK = 0
 
-        local α = params[MARK+1:MARK+L]; MARK += L
+        local α = exp.(params[MARK+1:MARK+L]); MARK += L
 
         local b = params[MARK+1:MARK+L]; MARK += L
 
@@ -85,7 +89,16 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
 
         logl = -0.5*sum(abs2.(C\(Y-Q*b))) - 0.5*2*sum(log.(diag(C))) - 0.5*log(2π)*size(C,1)
 
-        logl + logpriordelay(τ[2])
+        logprior =  logpriordelay(τ[2])
+        
+        for l in 1:L
+
+            logprior += logpdf(priorα[l], α[l]) + logpdf(priorb[l], b[l])
+
+        end
+        
+        logl + logprior
+
     end
       
 

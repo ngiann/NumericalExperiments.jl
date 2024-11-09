@@ -7,7 +7,7 @@ module NumericalExperiments
     ProgressMeter.ncalls(::typeof(tmap1), ::Function, args...) = ProgressMeter.ncalls_map(args...)
 
     include("gpccloglikelihood.jl")
-    
+    include("fitinversegamma.jl")
     include("roundeduniform.jl")
     export gpccloglikelihood, roundeduniform
 
