@@ -123,7 +123,7 @@ function run_3C120_skew(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
 
         local elboskew = elbofy_skewdiag(logp, 6, nsamples)
 
-        maximise_elbo(elboskew, randn(rng, numparams(elboskew)), iterations = iterations, show_trace = true)
+        maximise_elbo(elboskew, randn(rng, numparam(elboskew)), iterations = iterations, show_trace = true)
 
     end
 
