@@ -98,6 +98,8 @@ function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rn
             
         end
 
+        res
+
     end
 
     @showprogress map( _ -> fit_approximation(), 1:repeats)
