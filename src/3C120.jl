@@ -140,9 +140,9 @@ function run_3C120_skew_ext(; iterations = 30_000, repeats = 10, nsamples = 0, r
 
     function fit_approximation()
         
-        local elboskewext = elbofy_skew_ext(logp, 0.1*Matrix(I,6,6), nsamples)
+        local elboskewext = elbofy_skewdiag_ext(logp, 0.1*Matrix(I,6,6), nsamples)
 
-        local res = maximise_elbo(elboskewext, numparam(elboskewext), iterations = iterations, show_trace = true)
+        local res = maximise_elbo(elboskewext, randn(rng, numparam(elboskewext)), iterations = iterations, show_trace = true)
 
         local prvfitness = res.minimum
         
