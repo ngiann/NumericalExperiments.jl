@@ -51,7 +51,15 @@ function run_3C120_mvi(; iterations = 30_000, repeats = 10, nsamples = 0, rng = 
 
     function fit_approximation()
 
-        local V = geteigenvectors(logp, getmode(logp, randn(rng, 6))[1])
+        local resphere = let
+
+            local elbosphere = elbofy_sphere(logp, 6, nsamples)
+  
+            maximise_elbo(elbosphere, iterations = iterations, show_trace = true)
+
+        end
+
+        local V = geteigenvectors(logp, resphere.minimizer[1:6])
 
         local elbomvi = elbofy_mvi(logp, V, nsamples)
 
