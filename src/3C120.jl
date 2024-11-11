@@ -113,3 +113,20 @@ function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rn
     @showprogress map( _ -> fit_approximation(), 1:repeats)
     
 end
+
+
+function run_3C120_skew(; iterations = 30_000, repeats = 10, nsamples = 0, rng = MersenneTwister(1))
+    
+    logp, = setup_3C120_joint_loglikel()
+
+    function fit_approximation()
+
+        local elboskew = elbofy_skewdiag(logp, 6, nsamples)
+
+        maximise_elbo(elboskew, randn(rng, numparams(elboskew)), iterations = iterations, show_trace = true)
+
+    end
+
+    @showprogress map( _ -> fit_approximation(), 1:repeats)
+
+end
