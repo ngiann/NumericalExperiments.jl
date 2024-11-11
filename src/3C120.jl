@@ -130,3 +130,44 @@ function run_3C120_skew(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
     @showprogress map( _ -> fit_approximation(), 1:repeats)
 
 end
+
+
+
+
+function run_3C120_skew_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rng = MersenneTwister(1))
+    
+    logp, = setup_3C120_joint_loglikel()
+
+    function fit_approximation()
+        
+        local elboskewext = elbofy_skew_ext(logp, 0.1*Matrix(I,6,6), nsamples)
+
+        local res = maximise_elbo(elboskewext, numparam(elboskewext), iterations = iterations, show_trace = true)
+
+        local prvfitness = res.minimum
+        
+        local tol = 1e-4
+
+        for _ in 2:10
+
+            elboskewext, res = updatecovariance(elboskewext, res)
+
+            res = maximise_elbo(elboskewext, getsolution(res), iterations = iterations)
+
+            if abs(res.minimum - prvfitness)<tol
+                
+                break
+
+            end
+
+            prvfitness = res.minimum
+            
+        end
+
+        res
+
+    end
+
+    @showprogress map( _ -> fit_approximation(), 1:repeats)
+    
+end
