@@ -32,9 +32,17 @@ function run_3C120_full(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
     
     function fit_approximation()
 
+        local resphere = let
+
+            local elbosphere = elbofy_sphere(logp, 6, nsamples)
+  
+            maximise_elbo(elbosphere, iterations = iterations, show_trace = true)
+
+        end
+
         local elbofull = elbofy_full(logp, 6, nsamples)
 
-        local p = [randn(rng, 6); vec(0.1*Matrix(I,6,6))]
+        local p = [resphere.minimizer[1:6]; vec(0.1*Matrix(I,6,6))]
 
         maximise_elbo(elbofull, getsolution(p), iterations = iterations, show_trace = true)
 
