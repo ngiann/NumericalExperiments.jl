@@ -1,8 +1,10 @@
 function setup_3C120_joint_loglikel()
 
+    rng = MersenneTwister(13)
+
     tobs, yobs, σobs = GPCCData.readdataset(source="3C120")
 
-    logp, pred, unpack = gpccloglikelihood(tobs, yobs, σobs, kernel = GPCC.matern32, maxdelay = 50)
+    logp, pred, unpack = gpccloglikelihood(tobs, yobs, σobs, kernel = GPCC.matern32, maxdelay = 50, rng = rng)
 
 end
 

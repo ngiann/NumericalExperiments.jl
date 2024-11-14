@@ -1,4 +1,4 @@
-function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kernel = kernel, JITTER = 1e-8)
+function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kernel = kernel, JITTER = 1e-8, rng = rng)
 
     #---------------------------------------------------------------------
     # Check dimensions
@@ -36,7 +36,7 @@ function gpccloglikelihood(tarray, yarray, stdarray;  maxdelay = maxdelay, kerne
 
     priorρ =  let 
         
-        local ρ₀ =  GPCC.infercommonlengthscale(tarray, yarray, stdarray, kernel = kernel, iterations = 10000, numberofrestarts=20, initialrandom=10, ρmin = 0.1, ρmax = 200.0, verbose = false)
+        local ρ₀ =  GPCC.infercommonlengthscale(tarray, yarray, stdarray, kernel = kernel, iterations = 10000, numberofrestarts=20, initialrandom=10, ρmin = 0.1, ρmax = 200.0, verbose = false, rng = rng)
 
         fitinversegamma(μ = ρ₀, σ = 5)
 
