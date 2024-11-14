@@ -15,7 +15,7 @@ function run_3C120_diag(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
 
         local elbodiag = elbofy_diag(logp, 6, nsamples, parallel = true)
 
-        local p = [randn(rng, 6); 0.1*ones(6)]
+        local p = randn(rng, numparam(elbodiag))
 
         maximise_elbo(elbodiag, getsolution(p), iterations = iterations, show_trace = true)
 
@@ -31,18 +31,10 @@ function run_3C120_full(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
     logp, = setup_3C120_joint_loglikel()
     
     function fit_approximation()
-
-        local resphere = let
-
-            local elbosphere = elbofy_sphere(logp, 6, nsamples)
-  
-            maximise_elbo(elbosphere, iterations = iterations, show_trace = true)
-
-        end
-
+        
         local elbofull = elbofy_full(logp, 6, nsamples)
 
-        local p = [resphere.minimizer[1:6]; vec(0.1*Matrix(I,6,6))]
+        local p = randn(rng, numparam(elbofull))
 
         maximise_elbo(elbofull, getsolution(p), iterations = iterations, show_trace = true)
 
@@ -71,7 +63,7 @@ function run_3C120_mvi(; iterations = 30_000, repeats = 10, nsamples = 0, rng = 
 
         local elbomvi = elbofy_mvi(logp, V, nsamples)
 
-        local p = [randn(rng, 6); 0.1*ones(6)]
+        local p = [randn(rng, 6); resphere.minimizer[7]*ones(6)]
 
         maximise_elbo(elbomvi, getsolution(p), iterations = iterations, show_trace = true)
 
@@ -90,7 +82,7 @@ function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rn
 
         local p = [randn(rng, 6); ones(6); 0]
 
-        local elbomviext = elbofy_mvi_ext(logp, 0.1*Matrix(I,6,6), nsamples)
+        local elbomviext = elbofy_mvi_ext(logp, 1e-4*Matrix(I,6,6), nsamples)
 
         local res = maximise_elbo(elbomviext, getsolution(p), iterations = iterations, show_trace = true)
 
