@@ -80,7 +80,7 @@ function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rn
 
     function fit_approximation()
 
-        local p = [randn(rng, 6); ones(6); 0]
+        local p = [randn(rng, 6); randn(rng, 6); 0]
 
         local elbomviext = elbofy_mvi_ext(logp, 1e-4*Matrix(I,6,6), nsamples)
 
