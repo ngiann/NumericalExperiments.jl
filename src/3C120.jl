@@ -19,7 +19,7 @@ function run_3C120_diag(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
 
         local p = randn(rng, numparam(elbodiag))
 
-        maximise_elbo(elbodiag, getsolution(p), iterations = iterations, show_trace = true)
+        maximise_elbo(elbodiag, getsolution(p), iterations = iterations, show_trace = true, g_tol = 1e-6)
 
     end
 
@@ -38,7 +38,7 @@ function run_3C120_full(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
 
         local p = randn(rng, numparam(elbofull))
 
-        maximise_elbo(elbofull, getsolution(p), iterations = iterations, show_trace = true)
+        maximise_elbo(elbofull, getsolution(p), iterations = iterations, show_trace = true, g_tol = 1e-6)
 
     end
 
@@ -57,7 +57,7 @@ function run_3C120_mvi(; iterations = 30_000, repeats = 10, nsamples = 0, rng = 
 
             local elbosphere = elbofy_sphere(logp, 6, nsamples)
   
-            maximise_elbo(elbosphere, iterations = iterations, show_trace = true)
+            maximise_elbo(elbosphere, iterations = iterations, show_trace = true, g_tol = 1e-6)
 
         end
 
@@ -67,7 +67,7 @@ function run_3C120_mvi(; iterations = 30_000, repeats = 10, nsamples = 0, rng = 
 
         local p = [randn(rng, 6); resphere.minimizer[7]*ones(6)]
 
-        sol = maximise_elbo(elbomvi, getsolution(p), iterations = iterations, show_trace = true)
+        sol = maximise_elbo(elbomvi, getsolution(p), iterations = iterations, show_trace = true, g_tol = 1e-6)
 
         return sol, elbomvi
 
@@ -88,7 +88,7 @@ function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rn
 
         local elbomviext = elbofy_mvi_ext(logp, 1e-4*Matrix(I,6,6), nsamples)
 
-        local res = maximise_elbo(elbomviext, getsolution(p), iterations = iterations, show_trace = true)
+        local res = maximise_elbo(elbomviext, getsolution(p), iterations = iterations, show_trace = true, g_tol = 1e-6)
 
         local prvfitness = res.minimum
         
@@ -98,7 +98,7 @@ function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rn
 
             elbomviext, res = updatecovariance(elbomviext, res)
 
-            res = maximise_elbo(elbomviext, getsolution(res), iterations = iterations)
+            res = maximise_elbo(elbomviext, getsolution(res), iterations = iterations, g_tol = 1e-6)
 
             if abs(res.minimum - prvfitness)<tol
                 
@@ -127,7 +127,7 @@ function run_3C120_skew(; iterations = 30_000, repeats = 10, nsamples = 0, rng =
 
         local elboskew = elbofy_skewdiag(logp, 6, nsamples)
 
-        maximise_elbo(elboskew, randn(rng, numparam(elboskew)), iterations = iterations, show_trace = true)
+        maximise_elbo(elboskew, randn(rng, numparam(elboskew)), iterations = iterations, show_trace = true, g_tol = 1e-6)
 
     end
 
@@ -146,7 +146,7 @@ function run_3C120_skew_ext(; iterations = 30_000, repeats = 10, nsamples = 0, r
         
         local elboskewext = elbofy_skewdiag_ext(logp, 0.1*Matrix(I,6,6), nsamples)
 
-        local res = maximise_elbo(elboskewext, randn(rng, numparam(elboskewext)), iterations = iterations, show_trace = true)
+        local res = maximise_elbo(elboskewext, randn(rng, numparam(elboskewext)), iterations = iterations, show_trace = true, g_tol = 1e-6)
 
         local prvfitness = res.minimum
         
@@ -156,7 +156,7 @@ function run_3C120_skew_ext(; iterations = 30_000, repeats = 10, nsamples = 0, r
 
             elboskewext, res = updatecovariance(elboskewext, res)
 
-            res = maximise_elbo(elboskewext, getsolution(res), iterations = iterations)
+            res = maximise_elbo(elboskewext, getsolution(res), iterations = iterations, g_tol = 1e-6)
 
             if abs(res.minimum - prvfitness)<tol
                 
