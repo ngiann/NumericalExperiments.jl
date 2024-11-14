@@ -65,7 +65,9 @@ function run_3C120_mvi(; iterations = 30_000, repeats = 10, nsamples = 0, rng = 
 
         local p = [randn(rng, 6); resphere.minimizer[7]*ones(6)]
 
-        maximise_elbo(elbomvi, getsolution(p), iterations = iterations, show_trace = true)
+        sol, V = maximise_elbo(elbomvi, getsolution(p), iterations = iterations, show_trace = true)
+
+        return sol, elbomvi
 
     end
 
@@ -106,7 +108,7 @@ function run_3C120_mvi_ext(; iterations = 30_000, repeats = 10, nsamples = 0, rn
             
         end
 
-        res
+        res, elbomviext
 
     end
 
@@ -164,7 +166,7 @@ function run_3C120_skew_ext(; iterations = 30_000, repeats = 10, nsamples = 0, r
             
         end
 
-        res
+        res, elboskewext
 
     end
 
