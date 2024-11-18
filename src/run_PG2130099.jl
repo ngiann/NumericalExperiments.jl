@@ -1,7 +1,7 @@
 function setup_loglikel_PG2130099()
 
     rng = MersenneTwister(101)
-    
+
     tobs, yobs, σobs = GPCCData.readdataset(source="PG2130099");
 
     logp, pred, unpack = NumericalExperiments.gpccloglikelihood(tobs, yobs, σobs, kernel=GPCC.matern32, maxdelay=30, rng = rng);
@@ -24,7 +24,7 @@ function run_PG2130099(; iterations = 1)
 
         resdiag = maximise_elbo(elbodiag, randn(rng, numparam(elbodiag)), iterations = iterations)
 
-        JLD2.save("PG2130099_diag.jld2", resdiag)
+        JLD2.save("PG2130099_diag.jld2", "out", resdiag)
 
     end
 
@@ -35,7 +35,7 @@ function run_PG2130099(; iterations = 1)
 
         resfull = maximise_elbo(elbofull, randn(rng, numparam(elbofull)), iterations = iterations)
 
-        JLD2.save("PG2130099_full.jld2", resfull)
+        JLD2.save("PG2130099_full.jld2", "out", resfull)
         
     end
 
@@ -50,7 +50,7 @@ function run_PG2130099(; iterations = 1)
 
         resmvi = maximise_elbo(elbomvi, [ressphere.minimizer[1:6]; ones(6)*0.1], iterations = iterations)
 
-        JLD2.save("PG2130099_mvi.jld2", resmvi)
+        JLD2.save("PG2130099_mvi.jld2", "out", resmvi)
 
     end
 
@@ -70,7 +70,7 @@ function run_PG2130099(; iterations = 1)
 
         end
 
-        JLD2.save("PG2130099_mviext.jld2", resmviext)
+        JLD2.save("PG2130099_mviext.jld2", "out", resmviext)
 
     end
 
@@ -90,7 +90,7 @@ function run_PG2130099(; iterations = 1)
 
         end
 
-        JLD2.save("PG2130099_skewext.jld2", resskewext)
+        JLD2.save("PG2130099_skewext.jld2", "out", resskewext)
 
     end
 
