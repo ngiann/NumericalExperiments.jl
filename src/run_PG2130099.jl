@@ -32,9 +32,15 @@ function run_PG2130099(; iterations = 1)
     let
         rng = MersenneTwister(101)
 
+
+        elbosphere = elbofy_sphere(logp, 6, 100)
+
+        ressphere = maximise_elbo(elbosphere, randn(rng, numparam(elbosphere)), iterations = iterations)
+
+
         elbofull = elbofy_full(logp, 6, 100)
 
-        resfull = maximise_elbo(elbofull, randn(rng, numparam(elbofull)), iterations = iterations)
+        resfull = maximise_elbo(elbofull, [ressphere.minimizer[1:6]; ressphere.minimizer[7]*vec(1.0*Matrix(I,6,6))], iterations = iterations)
 
         JLD2.save("PG2130099_full.jld2", "resfull", resfull, "elbofull", elbofull)
         
