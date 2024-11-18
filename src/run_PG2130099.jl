@@ -24,7 +24,7 @@ function run_PG2130099(; iterations = 1)
 
         resdiag = maximise_elbo(elbodiag, randn(rng, numparam(elbodiag)), iterations = iterations)
 
-        JLD2.save("PG2130099_diag.jld2", "out", resdiag)
+        JLD2.save("PG2130099_diag.jld2", "resdiag", resdiag, "elbodiag", elbodiag)
 
     end
 
@@ -36,7 +36,7 @@ function run_PG2130099(; iterations = 1)
 
         resfull = maximise_elbo(elbofull, randn(rng, numparam(elbofull)), iterations = iterations)
 
-        JLD2.save("PG2130099_full.jld2", "out", resfull)
+        JLD2.save("PG2130099_full.jld2", "resfull", resfull, "elbofull", elbofull)
         
     end
 
@@ -52,7 +52,7 @@ function run_PG2130099(; iterations = 1)
 
         resmvi = maximise_elbo(elbomvi, [ressphere.minimizer[1:6]; ones(6)*0.1], iterations = iterations)
 
-        JLD2.save("PG2130099_mvi.jld2", "out", resmvi)
+        JLD2.save("PG2130099_mvi.jld2", "resmvi", resmvi, "elbomvi", elbomvi)
 
     end
 
@@ -73,7 +73,7 @@ function run_PG2130099(; iterations = 1)
 
         end
 
-        JLD2.save("PG2130099_mviext.jld2", "out", resmviext)
+        JLD2.save("PG2130099_mviext.jld2", "resmviext", resmviext, "elbomviext", elbomviext)
 
     end
 
@@ -94,7 +94,7 @@ function run_PG2130099(; iterations = 1)
 
         end
 
-        JLD2.save("PG2130099_skewext.jld2", "out", resskewext)
+        JLD2.save("PG2130099_skewext.jld2", "resskewext", resskewext, "elboskewext", elboskewext)
 
     end
 
