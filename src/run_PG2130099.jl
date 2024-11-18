@@ -13,12 +13,12 @@ end
 
 function run_PG2130099(; iterations = 1)
 
-    rng = MersenneTwister(101)
-
+    
     logp, = setup_loglikel_PG2130099()
-
+    
     # DIAGONAL
     let
+        rng = MersenneTwister(101)
 
         elbodiag = elbofy_diag(logp, 6, 100)
 
@@ -30,6 +30,7 @@ function run_PG2130099(; iterations = 1)
 
     # FULL
     let
+        rng = MersenneTwister(101)
 
         elbofull = elbofy_full(logp, 6, 100)
 
@@ -41,10 +42,11 @@ function run_PG2130099(; iterations = 1)
 
     # MVI - EIG
     let
+        rng = MersenneTwister(101)
 
         elbosphere = elbofy_sphere(logp, 6, 100)
 
-        ressphere = maximise_elbo(elbosphere, randn(rng, elbosphere), iterations = iterations)
+        ressphere = maximise_elbo(elbosphere, randn(rng, numparam(elbosphere)), iterations = iterations)
 
         elbomvi = elbofy_mvi(logp, geteigenvectors(logp, ressphere.minimizer[1:6]), 100)
 
@@ -57,10 +59,11 @@ function run_PG2130099(; iterations = 1)
 
     # MVI EXT
     let
+        rng = MersenneTwister(101)
 
         elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), 100)
 
-        resmviext = maximise_elbo(elbomviext, randn(rng, elbomviext), iterations = iterations)
+        resmviext = maximise_elbo(elbomviext, randn(rng, numparam(elbomviext)), iterations = iterations)
 
         for _ in 1:10
 
@@ -77,10 +80,11 @@ function run_PG2130099(; iterations = 1)
 
      # SKEW EXT
      let
+        rng = MersenneTwister(101)
 
         elboskewext = elbofy_skewdiag_ext(logp, 1.0*Matrix(I,6,6), 100)
 
-        resskewext = maximise_elbo(elboskewext, randn(rng, elboskewext), iterations = iterations)
+        resskewext = maximise_elbo(elboskewext, randn(rng, numparam(elboskewext)), iterations = iterations)
 
         for _ in 1:10
 
