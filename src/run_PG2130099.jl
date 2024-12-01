@@ -21,7 +21,7 @@ function run_PG2130099(; iterations = 1)
 
         rng = MersenneTwister(101)
 
-        elbosphere = elbofy_sphere(logp, 6, 300)
+        elbosphere = elbofy_sphere(logp, 6, 150)
 
         ressphere = maximise_elbo(elbosphere, randn(rng, numparam(elbosphere)), iterations = iterations,  g_tol = 1e-6, Method = NelderMead())
 
@@ -34,7 +34,7 @@ function run_PG2130099(; iterations = 1)
     # DIAGONAL
     let
         
-        elbodiag = elbofy_diag(logp, 6, 300)
+        elbodiag = elbofy_diag(logp, 6, 150)
 
         p = [p₀[1:end-1]; p₀[end]*ones(6)]
         
@@ -49,7 +49,7 @@ function run_PG2130099(; iterations = 1)
     # FULL
     let
  
-        elbofull = elbofy_full(logp, 6, 300)
+        elbofull = elbofy_full(logp, 6, 150)
 
         resfull = maximise_elbo(elbofull, [p₀[1:6]; p₀[7]*vec(1.0*Matrix(I,6,6))], iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
@@ -74,7 +74,7 @@ function run_PG2130099(; iterations = 1)
     # MVI EXT
     let
         
-        elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), 300)
+        elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), 150)
 
         p = [p₀[1:6]; p₀[7]*ones(6); 1]
 
@@ -98,7 +98,7 @@ function run_PG2130099(; iterations = 1)
      # SKEW EXT
      let
         
-        elboskewext = elbofy_skewdiag_ext(logp, 1.0*Matrix(I,6,6), 300)
+        elboskewext = elbofy_skewdiag_ext(logp, 1.0*Matrix(I,6,6), 150)
 
 
         p = [p₀[1:6]; p₀[7]*ones(6); zeros(6); 1]
@@ -131,7 +131,7 @@ function warmup_PG()
 
     let
 
-        elbosphere = elbofy_sphere(logp, 6, 50)
+        elbosphere = elbofy_sphere(logp, 6, 30)
 
         maximise_elbo(elbosphere, iterations = 3, Method = NelderMead())
 
@@ -139,7 +139,7 @@ function warmup_PG()
 
     let
 
-        elbodiag = elbofy_diag(logp, 6, 50)
+        elbodiag = elbofy_diag(logp, 6, 30)
 
         maximise_elbo(elbodiag, iterations = 3, Method = NelderMead())
 
@@ -147,7 +147,7 @@ function warmup_PG()
 
     let
 
-        elbofull = elbofy_full(logp, 6, 50)
+        elbofull = elbofy_full(logp, 6, 30)
 
         maximise_elbo(elbofull, iterations = 3, Method = NelderMead())
 
@@ -156,7 +156,7 @@ function warmup_PG()
    
     let
         
-        elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), 50)
+        elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), 30)
 
         resmviext = maximise_elbo(elbomviext, iterations = 3, Method = NelderMead())
 
@@ -168,7 +168,7 @@ function warmup_PG()
 
     let
         
-        elboskewext = elbofy_skewdiag_ext(logp, 1.0*Matrix(I,6,6), 300)
+        elboskewext = elbofy_skewdiag_ext(logp, 1.0*Matrix(I,6,6), 30)
 
         resskewext = maximise_elbo(elboskewext, iterations = 3, Method = NelderMead())
 
