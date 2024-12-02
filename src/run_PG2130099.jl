@@ -72,7 +72,7 @@ function run_PG2130099(; iterations = 1)
 
 
     # MVI EXT
-    let
+    elbomviext, pmviext = let
         
         elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), 150)
 
@@ -92,16 +92,20 @@ function run_PG2130099(; iterations = 1)
 
         JLD2.save("PG2130099_mviext.jld2", "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
 
+        elbomviext, getsolution(resmviext)
+
     end
 
 
      # SKEW EXT
      let
         
-        elboskewext = elbofy_skewdiag_ext(logp, 1.0*Matrix(I,6,6), 150)
+        μ₀, C₀ = ELBOfy.getμC(elbomviext, pmviext)
+
+        elboskewext = elbofy_skewdiag_ext(logp, C₀, 150)
 
 
-        p = [p₀[1:6]; p₀[7]*ones(6); zeros(6); 1]
+        p = [μ₀; zeros(6); zeros(6); 1]
 
 
         resskewext = maximise_elbo(elboskewext, p, iterations = iterations, g_tol = 1e-6, Method = NelderMead())
