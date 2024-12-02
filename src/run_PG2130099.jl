@@ -105,7 +105,7 @@ function run_PG2130099(; iterations = 1)
         elboskewext = elbofy_skewdiag_ext(logp, C₀, 150)
 
 
-        p = [μ₀; zeros(6); zeros(6); 1]
+        p = [μ₀; 1e-2*ones(6); zeros(6); 1]
 
 
         resskewext = maximise_elbo(elboskewext, p, iterations = iterations, g_tol = 1e-6, Method = NelderMead())
