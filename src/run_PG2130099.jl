@@ -84,6 +84,8 @@ function run_PG2130099(; iterations = 1)
 
         resmviext = maximise_elbo(elbomviext, p, iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
+        testevidence = testelbo(elbomviext, getsolution(resmviext), rng = MersenneTwister(101), Stest = 100_000)
+
         JLD2.save("PG2130099_mviext_1.jld2", "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
 
 
