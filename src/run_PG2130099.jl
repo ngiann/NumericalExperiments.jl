@@ -2,11 +2,12 @@ function setup_loglikel_PG2130099()
 
     rng = MersenneTwister(101)
 
-    tobs, yobs, σobs = GPCCData.readdataset(source="PG2130099");
+    tobs, yobs, σobs = GPCCData.readdataset(source="PG2130099")
 
-    logp, pred, unpack = NumericalExperiments.gpccloglikelihood(tobs, yobs, σobs, kernel=GPCC.matern32, maxdelay=30, rng = rng);
+    logp, pred, unpack = NumericalExperiments.gpccloglikelihood(tobs, yobs, σobs, kernel=GPCC.matern32, maxdelay=30, rng = rng)
 
-
+    return logp, pred, unpack
+    
 end
 
 
@@ -16,8 +17,12 @@ function run_PG2130099(; iterations = 1)
     
     logp, = setup_loglikel_PG2130099()
 
-     # Sphere
-     p₀ = let
+
+    ##########
+    # Sphere #
+    ##########
+
+    p₀ = let
 
         rng = MersenneTwister(101)
 
@@ -28,10 +33,14 @@ function run_PG2130099(; iterations = 1)
         JLD2.save("PG2130099_sphere.jld2", "ressphere", ressphere, "elbosphere", elbosphere)
 
         getsolution(ressphere)
+
     end
 
-    
-    # DIAGONAL
+
+    ############
+    # DIAGONAL #
+    ############
+
     let
         
         elbodiag = elbofy_diag(logp, 6, 150)
@@ -46,7 +55,11 @@ function run_PG2130099(; iterations = 1)
 
     end
 
-    # FULL
+
+    ########
+    # FULL #
+    ########
+
     let
  
         elbofull = elbofy_full(logp, 6, 150)
@@ -59,20 +72,11 @@ function run_PG2130099(; iterations = 1)
         
     end
 
-    # # MVI - EIG
-    # let
-        
-    #     elbomvi = elbofy_mvi(logp, geteigenvectors(logp, ressphere.minimizer[1:6]), 100)
+    ###########
+    # MVI EXT #
+    ###########
 
-    #     resmvi = maximise_elbo(elbomvi, [ressphere.minimizer[1:6]; ones(6)*0.1], iterations = iterations)
-
-    #     JLD2.save("PG2130099_mvi.jld2", "resmvi", resmvi, "elbomvi", elbomvi)
-
-    # end
-
-
-    # MVI EXT
-    elbomviext, pmviext = let
+    let
         
         elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), 150)
 
@@ -80,47 +84,20 @@ function run_PG2130099(; iterations = 1)
 
         resmviext = maximise_elbo(elbomviext, p, iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
-        for _ in 1:10
+        JLD2.save("PG2130099_mviext_1.jld2", "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
+
+
+        for i in 2:10
 
             elbomviext, resmviext = updatecovariance(elbomviext, resmviext)
 
             resmviext = maximise_elbo(elbomviext, getsolution(resmviext), iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
-        end
+            testevidence = testelbo(elbomviext, getsolution(resmviext), rng = MersenneTwister(101), Stest = 100_000)
 
-        testevidence = testelbo(elbomviext, getsolution(resmviext), rng = MersenneTwister(101), Stest = 100_000)
-
-        JLD2.save("PG2130099_mviext.jld2", "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
-
-        elbomviext, getsolution(resmviext)
-
-    end
-
-
-     # SKEW EXT
-     let
-        
-        μ₀, C₀ = ELBOfy.getμC(elbomviext, pmviext)
-
-        elboskewext = elbofy_skewdiag_ext(logp, C₀, 150)
-
-
-        p = [μ₀; 1e-2*ones(6); zeros(6); 1]
-
-
-        resskewext = maximise_elbo(elboskewext, p, iterations = iterations, g_tol = 1e-6, Method = NelderMead())
-
-        for _ in 1:10
-
-            elboskewext, resskewext = updatecovariance(elboskewext, resskewext)
-
-            resskewext = maximise_elbo(elboskewext, getsolution(resskewext), iterations = iterations, g_tol = 1e-6, Method = NelderMead())
+            JLD2.save(@sprintf("PG2130099_mviext_%d.jld2",i), "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
 
         end
-
-        testevidence = testelbo(elboskewext, getsolution(resskewext), rng = MersenneTwister(101), Stest = 100_000)
-
-        JLD2.save("PG2130099_skewext.jld2", "resskewext", resskewext, "elboskewext", elboskewext, "testevidence", testevidence)
 
     end
 
@@ -157,7 +134,6 @@ function warmup_PG()
 
     end
 
-   
     let
         
         elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), 30)
@@ -170,16 +146,5 @@ function warmup_PG()
 
     end
 
-    let
-        
-        elboskewext = elbofy_skewdiag_ext(logp, 1.0*Matrix(I,6,6), 30)
-
-        resskewext = maximise_elbo(elboskewext, iterations = 3, Method = NelderMead())
-
-        elboskewext, resskewext = updatecovariance(elboskewext, resskewext)
-
-        maximise_elbo(elboskewext, getsolution(resskewext), iterations = 3, Method = NelderMead())
-
-    end
 
 end
