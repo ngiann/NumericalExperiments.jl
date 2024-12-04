@@ -1,4 +1,4 @@
-function run_PG2130099(; iterations = 1)
+function run_PG2130099(; iterations = 1, S = 100, Stest = Stest)
 
     
     logp, = setup_loglikel_PG2130099()
@@ -12,11 +12,13 @@ function run_PG2130099(; iterations = 1)
 
         rng = MersenneTwister(101)
 
-        elbosphere = elbofy_sphere(logp, 6, 150)
+        elbosphere = elbofy_sphere(logp, 6, S)
 
         ressphere = maximise_elbo(elbosphere, randn(rng, numparam(elbosphere)), iterations = iterations,  g_tol = 1e-6, Method = NelderMead())
 
-        JLD2.save("PG2130099_sphere.jld2", "ressphere", ressphere, "elbosphere", elbosphere)
+        testevidence = testelbo(elbosphere, getsolution(ressphere), rng = MersenneTwister(101), Stest = Stest)
+
+        JLD2.save("PG2130099_sphere.jld2", "ressphere", ressphere, "elbosphere", elbosphere, "testevidence", testevidence)
 
         getsolution(ressphere)
 
@@ -29,13 +31,13 @@ function run_PG2130099(; iterations = 1)
 
     let
         
-        elbodiag = elbofy_diag(logp, 6, 150)
+        elbodiag = elbofy_diag(logp, 6, S)
 
         p = [p₀[1:end-1]; p₀[end]*ones(6)]
         
         resdiag = maximise_elbo(elbodiag, p, iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
-        testevidence = testelbo(elbodiag, getsolution(resdiag), rng = MersenneTwister(101), Stest = 100_000)
+        testevidence = testelbo(elbodiag, getsolution(resdiag), rng = MersenneTwister(101), Stest = Stest)
 
         JLD2.save("PG2130099_diag.jld2", "resdiag", resdiag, "elbodiag", elbodiag, "testevidence", testevidence)
 
@@ -48,15 +50,16 @@ function run_PG2130099(; iterations = 1)
 
     let
  
-        elbofull = elbofy_full(logp, 6, 150)
+        elbofull = elbofy_full(logp, 6, S)
 
         resfull = maximise_elbo(elbofull, [p₀[1:6]; p₀[7]*vec(1.0*Matrix(I,6,6))], iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
-        testevidence = testelbo(elbofull, getsolution(resfull), rng = MersenneTwister(101), Stest = 100_000)
+        testevidence = testelbo(elbofull, getsolution(resfull), rng = MersenneTwister(101), Stest = Stest)
 
         JLD2.save("PG2130099_full.jld2", "resfull", resfull, "elbofull", elbofull, "testevidence", testevidence)
         
     end
+    
 
     ###########
     # MVI EXT #
@@ -64,13 +67,13 @@ function run_PG2130099(; iterations = 1)
 
     let
         
-        elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), 150)
+        elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), S)
 
         p = [p₀[1:6]; p₀[7]*ones(6); 1]
 
         resmviext = maximise_elbo(elbomviext, p, iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
-        testevidence = testelbo(elbomviext, getsolution(resmviext), rng = MersenneTwister(101), Stest = 100_000)
+        testevidence = testelbo(elbomviext, getsolution(resmviext), rng = MersenneTwister(101), Stest = Stest)
 
         JLD2.save("PG2130099_mviext_1.jld2", "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
 
@@ -81,7 +84,7 @@ function run_PG2130099(; iterations = 1)
 
             resmviext = maximise_elbo(elbomviext, getsolution(resmviext), iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
-            testevidence = testelbo(elbomviext, getsolution(resmviext), rng = MersenneTwister(101), Stest = 100_000)
+            testevidence = testelbo(elbomviext, getsolution(resmviext), rng = MersenneTwister(101), Stest = Stest)
 
             JLD2.save(@sprintf("PG2130099_mviext_%d.jld2",i), "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
 
