@@ -6,13 +6,10 @@ module NumericalExperiments
 
     ProgressMeter.ncalls(::typeof(tmap1), ::Function, args...) = ProgressMeter.ncalls_map(args...)
 
-    include("gpccloglikelihood.jl")
-    include("fitinversegamma.jl")
-    include("roundeduniform.jl")
-    export gpccloglikelihood, roundeduniform
+    include("PG213009/gpccloglikelihood.jl")
+    include("PG213009/fitinversegamma.jl")
+    include("PG213009/roundeduniform.jl")
+    include("PG213009/run_PG2130099.jl")
+    export warmup_PG, setup_loglikel_PG2130099, run_PG2130099
 
-    # include("runapproximation.jl")
-
-    # include("3C120.jl")
-    include("run_PG2130099.jl")
 end
