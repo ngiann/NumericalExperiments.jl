@@ -11,12 +11,14 @@ function warmup_PG()
 
         maximise_elbo(elbosphere, iterations = 3, Method = NelderMead())
 
+
         elbomix = elbofy_mixture(ELBOfy.ElboSphere, logp, 6, 30, K = 3)
 
         maximise_elbo(elbomix, iterations = 3, Method = NelderMead())
 
 
     end
+
 
     let
 
@@ -26,11 +28,13 @@ function warmup_PG()
 
         maximise_elbo(elbodiag, iterations = 3, Method = NelderMead())
 
+
         elbomix = elbofy_mixture(ELBOfy.ElboDiag, logp, 6, 30, K = 3)
 
         maximise_elbo(elbomix, iterations = 3, Method = NelderMead())
 
     end
+
 
     let
 
@@ -40,12 +44,14 @@ function warmup_PG()
 
         maximise_elbo(elbofull, iterations = 3, Method = NelderMead())
 
+
         elbomix = elbofy_mixture(ELBOfy.ElboFull, logp, 6, 30, K = 3)
 
         maximise_elbo(elbomix, iterations = 3, Method = NelderMead())
 
     end
 
+    
     let
 
         @printf("\n=> Warm up for mvi ext and mixture thereof\n")
@@ -59,7 +65,7 @@ function warmup_PG()
         maximise_elbo(elbomviext, getsolution(resmviext), iterations = 3, Method = NelderMead())
 
 
-        elbomix = elbofy_mixture(ELBOfy.ElboMviExt, logp, 6, 30, K = 3)
+        elbomix = elbofy_mixture(ELBOfy.ElboMVIExt, logp, 6, 30, K = 3)
 
         maximise_elbo(elbomix, iterations = 3, Method = NelderMead())
         
