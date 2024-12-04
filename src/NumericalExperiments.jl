@@ -1,6 +1,6 @@
 module NumericalExperiments
 
-    using JLD2, GPCC, GPCCData, LinearAlgebra, Random, ELBOfy, ELBOfyUtilities, Distributions, ProgressMeter, ThreadTools, Optim
+    using JLD2, Printf, GPCC, GPCCData, LinearAlgebra, Random, ELBOfy, ELBOfyUtilities, Distributions, ProgressMeter, ThreadTools, Optim
 
     # Following lines makes ProgressMeter work with tmap1
 
