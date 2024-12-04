@@ -1,7 +1,7 @@
 name = "NumericalExperiments"
 uuid = "ad2e6c4f-0bdc-470d-a0f9-562d73da60c5"
 authors = ["Nikos Gianniotis <ngiann@gmail.com> and contributors"]
-version = "1.0.33-DEV"
+version = "1.0.34-DEV"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
