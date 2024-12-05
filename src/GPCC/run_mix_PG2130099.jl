@@ -1,7 +1,7 @@
-function run_PG2130099(; iterations = 1, K = 2, S = 100, Stest = 100_000)
+function run_mixture_GPCC(; iterations = 1, K = 2, S = 100, Stest = 100_000)
 
     
-    logp, = setup_loglikel_PG2130099()
+    logp, = setup_loglikel_GPCC(source = source)
 
 
     ##########
@@ -24,7 +24,7 @@ function run_PG2130099(; iterations = 1, K = 2, S = 100, Stest = 100_000)
 
         resmixsphere = getsolution(A[bestindex])
 
-        JLD2.save("PG2130099_sphere.jld2", "resmixsphere", resmixsphere, "elbomixsphere", elbomixsphere)
+        JLD2.save(@sprintf("%s_mixture_sphere.jld2", source), "resmixsphere", resmixsphere, "elbomixsphere", elbomixsphere)
 
         getsolution(resmixsphere)
 
@@ -45,7 +45,7 @@ function run_PG2130099(; iterations = 1, K = 2, S = 100, Stest = 100_000)
 
         testevidence = testelbo(elbodiag, getsolution(resdiag), rng = MersenneTwister(101), Stest = Stest)
 
-        JLD2.save("PG2130099_diag.jld2", "resdiag", resdiag, "elbodiag", elbodiag, "testevidence", testevidence)
+        JLD2.save(@sprintf("%s_mixture_diag.jld2", source), "resdiag", resdiag, "elbodiag", elbodiag, "testevidence", testevidence)
 
     end
 

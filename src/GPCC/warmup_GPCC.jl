@@ -1,7 +1,7 @@
-function warmup_PG()
+function warmup_GPCC()
 
 
-    logp, = setup_loglikel_PG2130099()
+    logp, = setup_loglikel_GPCC(source = "PG2130099")
 
     let
 

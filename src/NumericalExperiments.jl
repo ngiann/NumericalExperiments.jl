@@ -16,8 +16,8 @@ module NumericalExperiments
     include("GPCC/roundeduniform.jl")
     include("GPCC/run_GPCC.jl")
     include("GPCC/setup_loglikel_GPCC.jl")
-    include("GPCC/warmup_PG.jl")
+    include("GPCC/warmup_GPCC.jl")
 
-    export warmup_PG, setup_loglikel_GPCC, run_GPCC
+    export warmup_GPCC, setup_loglikel_GPCC, run_GPCC
 
 end
