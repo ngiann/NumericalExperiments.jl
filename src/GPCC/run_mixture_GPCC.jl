@@ -14,7 +14,7 @@ function run_mixture_GPCC(;source = source, iterations = 1, K = 2, S = 100, Stes
 
         elbomixsphere = elbofy_uniform_mixture(ELBOfy.ElboSphere, logp, 6, S, K = K)
 
-        aux = () -> bbmaximise_elbo(elbomixsphere, randn(rng, numparam(elbomixsphere)), iterations = 1000, Method = :generating_set_search)
+        aux = () -> maximise_elbo(elbomixsphere, randn(rng, numparam(elbomixsphere)), iterations = 10_000, Method = NelderMead())
 
         A = [aux() for _ in 1:3] # run fitting multiple times
 
