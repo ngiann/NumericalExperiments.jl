@@ -12,11 +12,11 @@ function run_mixture_GPCC(;source = source, iterations = 1, K = 2, S = 100, Stes
 
         rng = MersenneTwister(101)
 
-        elbomixsphere = elbofy_mixture(ELBOfy.ElboSphere, logp, 6, S, K = K)
+        elbomixsphere = elbofy_uniform_mixture(ELBOfy.ElboSphere, logp, 6, S, K = K)
 
         aux = () -> bbmaximise_elbo(elbomixsphere, randn(rng, numparam(elbomixsphere)), iterations = iterations, Method = :generating_set_search)
 
-        A = [aux() for _ in 1:10] # run fitting multiple times
+        A = [aux() for _ in 1:3] # run fitting multiple times
 
         fitness = [elbomixsphere(getsolution(a)) for a in A] # collect lower bounds
 
