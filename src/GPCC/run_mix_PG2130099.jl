@@ -1,4 +1,4 @@
-function run_PG2130099(; iterations = 1, S = 100, Stest = Stest)
+function run_PG2130099(; iterations = 1, K = 2, S = 100, Stest = 100_000)
 
     
     logp, = setup_loglikel_PG2130099()
@@ -12,15 +12,21 @@ function run_PG2130099(; iterations = 1, S = 100, Stest = Stest)
 
         rng = MersenneTwister(101)
 
-        elbosphere = elbofy_sphere(logp, 6, S)
+        elbomixsphere = elbofy_mixture(ELBOfy.ElboSphere, logp, 6, S, K = K)
 
-        ressphere = maximise_elbo(elbosphere, randn(rng, numparam(elbosphere)), iterations = iterations,  g_tol = 1e-6, Method = NelderMead())
+        aux = bbmaximise_elbo(elbomixsphere, randn(rng, numparam(elbomixsphere)), iterations = iterations, g_tol = 1e-6, Method = NelderMead(), Method = :generating_set_search)
 
-        testevidence = testelbo(elbosphere, getsolution(ressphere), rng = MersenneTwister(101), Stest = Stest)
+        A = [aux() for _ in 1:10]
 
-        JLD2.save("PG2130099_sphere.jld2", "ressphere", ressphere, "elbosphere", elbosphere, "testevidence", testevidence)
+        fitness = [elbomixsphere(getsolution(a)) for a in A]
 
-        getsolution(ressphere)
+        bestindex = argmin(fitness)
+
+        resmixsphere = getsolution(A[bestindex])
+
+        JLD2.save("PG2130099_sphere.jld2", "resmixsphere", resmixsphere, "elbomixsphere", elbomixsphere)
+
+        getsolution(resmixsphere)
 
     end
 
@@ -59,7 +65,6 @@ function run_PG2130099(; iterations = 1, S = 100, Stest = Stest)
         JLD2.save("PG2130099_full.jld2", "resfull", resfull, "elbofull", elbofull, "testevidence", testevidence)
         
     end
-    
 
     ###########
     # MVI EXT #

@@ -11,13 +11,13 @@ module NumericalExperiments
     # GPCC #
     ########
     
-    include("PG213009/gpccloglikelihood.jl")
-    include("PG213009/fitinversegamma.jl")
-    include("PG213009/roundeduniform.jl")
-    include("PG213009/run_PG2130099.jl")
-    include("PG213009/setup_loglikel_PG2130099.jl")
-    include("PG213009/warmup_PG.jl")
+    include("GPCC/gpccloglikelihood.jl")
+    include("GPCC/fitinversegamma.jl")
+    include("GPCC/roundeduniform.jl")
+    include("GPCC/run_GPCC.jl")
+    include("GPCC/setup_loglikel_GPCC.jl")
+    include("GPCC/warmup_PG.jl")
 
-    export warmup_PG, setup_loglikel_PG2130099, run_PG2130099
+    export warmup_PG, setup_loglikel_GPCC, run_GPCC
 
 end
