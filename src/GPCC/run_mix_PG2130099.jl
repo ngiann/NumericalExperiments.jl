@@ -8,7 +8,7 @@ function run_mixture_GPCC(; iterations = 1, K = 2, S = 100, Stest = 100_000)
     # Sphere #
     ##########
 
-    p₀ = let
+    mixsphere, p₀ = let
 
         rng = MersenneTwister(101)
 
@@ -16,17 +16,17 @@ function run_mixture_GPCC(; iterations = 1, K = 2, S = 100, Stest = 100_000)
 
         aux = bbmaximise_elbo(elbomixsphere, randn(rng, numparam(elbomixsphere)), iterations = iterations, g_tol = 1e-6, Method = NelderMead(), Method = :generating_set_search)
 
-        A = [aux() for _ in 1:10]
+        A = [aux() for _ in 1:10] # run fitting multiple times
 
-        fitness = [elbomixsphere(getsolution(a)) for a in A]
+        fitness = [elbomixsphere(getsolution(a)) for a in A] # collect lower bounds
 
-        bestindex = argmin(fitness)
+        bestindex = argmax(fitness) # get solution with highest evidence
 
         resmixsphere = getsolution(A[bestindex])
 
-        JLD2.save(@sprintf("%s_mixture_sphere.jld2", source), "resmixsphere", resmixsphere, "elbomixsphere", elbomixsphere)
+        JLD2.save(@sprintf("%s_K%d_mixture_sphere.jld2", source, K), "resmixsphere", resmixsphere, "elbomixsphere", elbomixsphere)
 
-        getsolution(resmixsphere)
+        elbomixsphere, getsolution(resmixsphere)
 
     end
 
@@ -37,15 +37,13 @@ function run_mixture_GPCC(; iterations = 1, K = 2, S = 100, Stest = 100_000)
 
     let
         
-        elbodiag = elbofy_diag(logp, 6, S)
+        elbodiag = elbofy_mixture(ELBOfy.ElboDiag, logp, 6, S, K = K)
 
-        p = [p₀[1:end-1]; p₀[end]*ones(6)]
-        
-        resdiag = maximise_elbo(elbodiag, p, iterations = iterations, g_tol = 1e-6, Method = NelderMead())
+        resdiag = maximise_elbo(elbodiag, diagonal_parameters(mixsphere, p₀), iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
         testevidence = testelbo(elbodiag, getsolution(resdiag), rng = MersenneTwister(101), Stest = Stest)
 
-        JLD2.save(@sprintf("%s_mixture_diag.jld2", source), "resdiag", resdiag, "elbodiag", elbodiag, "testevidence", testevidence)
+        JLD2.save(@sprintf("%s_K%d_mixture_diag.jld2", source, K), "resdiag", resdiag, "elbodiag", elbodiag, "testevidence", testevidence)
 
     end
 
@@ -56,13 +54,13 @@ function run_mixture_GPCC(; iterations = 1, K = 2, S = 100, Stest = 100_000)
 
     let
  
-        elbofull = elbofy_full(logp, 6, S)
+        elbofull = elbofy_mixture(ELBOfy.ElboFull, logp, 6, S, K = K) 
 
-        resfull = maximise_elbo(elbofull, [p₀[1:6]; p₀[7]*vec(1.0*Matrix(I,6,6))], iterations = iterations, g_tol = 1e-6, Method = NelderMead())
+        resfull = maximise_elbo(elbofull, full_parameters(mixsphere, p₀), iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
         testevidence = testelbo(elbofull, getsolution(resfull), rng = MersenneTwister(101), Stest = Stest)
 
-        JLD2.save("PG2130099_full.jld2", "resfull", resfull, "elbofull", elbofull, "testevidence", testevidence)
+        JLD2.save(@sprintf("%s_K%d_mixture_full.jld2", source, K), "resfull", resfull, "elbofull", elbofull, "testevidence", testevidence)
         
     end
 
@@ -72,15 +70,13 @@ function run_mixture_GPCC(; iterations = 1, K = 2, S = 100, Stest = 100_000)
 
     let
         
-        elbomviext = elbofy_mvi_ext(logp, 1.0*Matrix(I,6,6), S)
+        elbomviext = elbofy_mixture(ELBOfy.ElboMVIExt, logp, 6, S, K = K) 
 
-        p = [p₀[1:6]; p₀[7]*ones(6); 1]
-
-        resmviext = maximise_elbo(elbomviext, p, iterations = iterations, g_tol = 1e-6, Method = NelderMead())
+        resmviext = maximise_elbo(elbomviext, mvi_parameters(mixsphere, p₀), iterations = iterations, g_tol = 1e-6, Method = NelderMead())
 
         testevidence = testelbo(elbomviext, getsolution(resmviext), rng = MersenneTwister(101), Stest = Stest)
 
-        JLD2.save("PG2130099_mviext_1.jld2", "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
+        JLD2.save(@sprintf("%s_K%d_mixture_mviext_1.jld2", source, K), "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
 
 
         for i in 2:10
@@ -91,7 +87,7 @@ function run_mixture_GPCC(; iterations = 1, K = 2, S = 100, Stest = 100_000)
 
             testevidence = testelbo(elbomviext, getsolution(resmviext), rng = MersenneTwister(101), Stest = Stest)
 
-            JLD2.save(@sprintf("PG2130099_mviext_%d.jld2",i), "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
+            JLD2.save(@sprintf("%s_K%d_mviext_%d.jld2", source, K, i), "resmviext", resmviext, "elbomviext", elbomviext, "testevidence", testevidence)
 
         end
 
