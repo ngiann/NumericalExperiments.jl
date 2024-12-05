@@ -15,9 +15,10 @@ module NumericalExperiments
     include("GPCC/fitinversegamma.jl")
     include("GPCC/roundeduniform.jl")
     include("GPCC/run_GPCC.jl")
+    include("GPCC/run_mixture_GPCC.jl")
     include("GPCC/setup_loglikel_GPCC.jl")
     include("GPCC/warmup_GPCC.jl")
 
-    export warmup_GPCC, setup_loglikel_GPCC, run_GPCC
+    export warmup_GPCC, setup_loglikel_GPCC, run_GPCC, run_mixture_GPCC
 
 end
