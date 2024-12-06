@@ -1,7 +1,7 @@
-function run_mixture_GPCC(;source = source, iterations = 1, K = 2, S = 100, Stest = 100_000)
+function run_mixture_GPCC(;source = source, iterations = 1, K = 2, S = 100, Stest = 100_000, maxdelay = maxdelay)
 
     
-    logp, = setup_loglikel_GPCC(source = source)
+    logp, = setup_loglikel_GPCC(source = source, maxdelay = maxdelay)
 
 
     ##########

@@ -1,4 +1,4 @@
-function setup_loglikel_GPCC(;source = "PG2130099")
+function setup_loglikel_GPCC(;source = source, maxdelay = maxdelay)
 
     if ~in(source, GPCCData.listdatasets())
 
@@ -14,7 +14,7 @@ function setup_loglikel_GPCC(;source = "PG2130099")
 
     tobs, yobs, σobs = GPCCData.readdataset(source = source)
 
-    logp, pred, unpack = NumericalExperiments.gpccloglikelihood(tobs, yobs, σobs, kernel=GPCC.matern32, maxdelay=30, rng = rng)
+    logp, pred, unpack = NumericalExperiments.gpccloglikelihood(tobs, yobs, σobs, kernel=GPCC.matern32, maxdelay=maxdelay, rng = rng)
 
     return logp, pred, unpack
     
