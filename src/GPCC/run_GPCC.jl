@@ -1,7 +1,7 @@
 function run_GPCC(; source = source, iterations = 1, S = 100, Stest = Stest, maxdelay = maxdelay)
 
     
-    logp, = setup_loglikel_GPCC(source = source)
+    logp, = setup_loglikel_GPCC(source = source, maxdelay = maxdelay)
 
 
     ##########
