@@ -2,10 +2,15 @@ module NumericalExperiments
 
     using JLD2, Printf, GPCC, GPCCData, LinearAlgebra, Random, ELBOfy, ELBOfyUtilities, Distributions, ProgressMeter, ThreadTools, Optim
 
+    using Distances, DelimitedFiles, StatsFuns
     # Following lines makes ProgressMeter work with tmap1
 
     ProgressMeter.ncalls(::typeof(tmap1), ::Function, args...) = ProgressMeter.ncalls_map(args...)
 
+
+    include("GP/gpfit.jl")
+    include("GP/read_concrete.jl")
+    export gpfit, read_concrete
 
     ########
     # GPCC #
