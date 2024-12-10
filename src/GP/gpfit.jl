@@ -28,7 +28,7 @@ end
 
 #--------------------------------------------------------------
 
-numgparam(D) = sum(1:D) + 2
+numgparam(D) = D*D + 2
 
 #--------------------------------------------------------------
 
@@ -83,7 +83,7 @@ rbf(D²) = exp.(-0.5*D²)
 
 calculate_distance(X, Q) = calculate_distance(X, X, Q)
 
-calculate_distance(X₁, X₂, Q) = sq_mahalanobis_distances(X₁, X₂, Q)#pairwise(SqMahalanobis(Q), X₁, X₂) # 
+calculate_distance(X₁, X₂, Q) = pairwise(SqMahalanobis(Q), X₁, X₂) # 
 
 
 calculate_covariance(X₁, X₂, Q) = rbf(calculate_distance(X₁, X₂, Q))
@@ -97,13 +97,11 @@ function unpack(p, D)
 
     @assert(length(p) == numgparam(D))
 
-    n = sum(1:D)
+    local Qroot = reshape(p[1:D*D], D, D)
 
-    local Qroot = vec2lr(p[1:n])
+    local α = softplus(p[D*D + 1])
 
-    local α = softplus(p[n + 1])
-
-    local β = softplus(p[n + 2])
+    local β = softplus(p[D*D + 2])
 
     return (Qroot*Qroot') + 1e-6*I, α, β
 
